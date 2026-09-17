@@ -1,0 +1,622 @@
+<!-- Fullscreen Confetti Particle Canvas Overlay -->
+<canvas #confettiCanvas class="confetti-canvas"></canvas>
+
+<!-- Scroll Progress Indicator Bar -->
+<div class="scroll-progress-container"><div class="scroll-progress-bar" [style.width.%]="scrollProgress()"></div></div>
+
+<!-- Toast Popup Notification -->
+<div class="crazy-toast" *ngIf="toastMessage()">
+  <span>{{ toastMessage() }}</span>
+</div>
+
+<div class="container" [class.shake-screen]="screenShaking()">
+  <!-- Breaking HR News Banner -->
+  <div class="news-banner">
+    <div class="news-tag">⚡ BREAKING HR NEWS</div>
+    <div class="news-content">{{ tickerNews[latestNewsIndex()] }}</div>
+  </div>
+
+  <!-- HERO COMMAND CENTER HEADER -->
+  <header class="hero-command-center">
+    <div class="hero-top-row">
+      <div class="hero-title-box">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div class="brand-logo">⚛️</div>
+          <div>
+            <h1>QUANTUM TEAM COMMAND CENTER</h1>
+            <p class="subtitle">Real-time chaos. Measurable results. (Sort of.)</p>
+          </div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="action-game-btn" (click)="openExcuseWheel()">
+          <span>🎡 Spin Excuse Wheel</span>
+        </button>
+        <button class="action-game-btn" (click)="openAddMemberModal()">
+          <span>👥 Add Teammate</span>
+        </button>
+        <button class="sound-toggle-btn" [class.active]="soundEnabled()" (click)="toggleSound()">
+          <span *ngIf="soundEnabled()">🔊 Sound ON</span>
+          <span *ngIf="!soundEnabled()">🔇 Muted</span>
+        </button>
+        <button class="chaos-toggle-btn" [class.active]="isCrazyMode()" (click)="toggleCrazyMode()">
+          <span>🤪 CHAOS MODE: {{ isCrazyMode() ? 'ON' : 'OFF' }}</span>
+        </button>
+        <button class="theme-toggle-btn" (click)="toggleTheme()" [attr.aria-label]="isDarkMode() ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
+          <span *ngIf="isDarkMode()">☀️ Light</span>
+          <span *ngIf="!isDarkMode()">🌙 Dark</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- HERO METRIC CARDS & HALL OF FAME PODIUM ROW -->
+    <div class="hero-content-grid">
+      <!-- 4 Top Metric Cards -->
+      <div class="summary-metrics-grid">
+        <div class="sum-card card-purple">
+          <div class="sum-header">
+            <span class="sum-icon">🧠</span>
+            <span class="sum-title">CHAOS INDEX</span>
+          </div>
+          <div class="sum-value">87.4</div>
+          <div class="sum-trend text-purple">🔥 ↑ 12% vs last week</div>
+        </div>
+
+        <div class="sum-card card-blue">
+          <div class="sum-header">
+            <span class="sum-icon">⚡</span>
+            <span class="sum-title">PRODUCTIVITY INDEX</span>
+          </div>
+          <div class="sum-value">42%</div>
+          <div class="sum-trend text-blue">↓ 8% vs last week</div>
+        </div>
+
+        <div class="sum-card card-orange">
+          <div class="sum-header">
+            <span class="sum-icon">🍿</span>
+            <span class="sum-title">SNACK VELOCITY</span>
+          </div>
+          <div class="sum-value">4,841 <span class="sum-unit">/ hr</span></div>
+          <div class="sum-trend text-orange">↑ 23% vs last week</div>
+        </div>
+
+        <div class="sum-card card-teal">
+          <div class="sum-header">
+            <span class="sum-icon">📅</span>
+            <span class="sum-title">MEETING DAMAGE</span>
+          </div>
+          <div class="sum-value">73%</div>
+          <div class="sum-trend text-teal">↑ 15% vs last week</div>
+        </div>
+      </div>
+
+      <!-- Right Column: Team Hall of Fame Podium + Mascot Card -->
+      <div class="hero-right-column">
+        <div class="hall-of-fame-card">
+          <div class="hof-header">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="font-size:1.4rem;">🏆</span>
+              <h3>TEAM HALL OF FAME</h3>
+            </div>
+            <span class="view-all-link" (click)="scrollToLeaderboard()">View All →</span>
+          </div>
+          <div class="hof-grid">
+            <div class="hof-item gold" (click)="openDrawerById('alex')" title="Click to view Alex's full stats">
+              <div class="hof-rank">🥇 #1</div>
+              <div class="hof-avatar">🍕</div>
+              <div class="hof-details">
+                <strong>Alex Chen</strong>
+                <span>Snack Legend</span>
+                <div class="hof-val">4,841 <small>/ hr</small></div>
+              </div>
+            </div>
+
+            <div class="hof-item silver" (click)="openDrawerById('priya')" title="Click to view Priya's full stats">
+              <div class="hof-rank">🥈 #2</div>
+              <div class="hof-avatar">☕</div>
+              <div class="hof-details">
+                <strong>Priya Nair</strong>
+                <span>Passive Aggression Champion</span>
+                <div class="hof-val">9.8 <small>/10</small></div>
+              </div>
+            </div>
+
+            <div class="hof-item bronze" (click)="openDrawerById('marcus')" title="Click to view Marcus's full stats">
+              <div class="hof-rank">🥉 #3</div>
+              <div class="hof-avatar">🫥</div>
+              <div class="hof-details">
+                <strong>Marcus Williams</strong>
+                <span>Excuse Innovator</span>
+                <div class="hof-val">98.2</div>
+              </div>
+            </div>
+
+            <div class="hof-item" (click)="openDrawerById('sarah')" title="Click to view Sarah's full stats">
+              <div class="hof-rank">#4</div>
+              <div class="hof-avatar">💀</div>
+              <div class="hof-details">
+                <strong>Sarah Okonkwo</strong>
+                <span>Meeting Survivor</span>
+                <div class="hof-val">4.2%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mascot Illustration Card -->
+        <div class="mascot-card">
+          <div class="mascot-text">
+            <span class="mascot-tag">Same Team. Different Dimensions!</span>
+            <div class="mascot-slogan">COFFEE FUELS CHAOS</div>
+          </div>
+          <div class="mascot-emoji">☕👨‍🚀</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MIDDLE SECTION TITLE & FILTER BAR -->
+  <div class="section-title-bar">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span style="font-size:1.4rem;">👥</span>
+      <h2>TEAM MEMBERS & THEIR UNIQUE STATS</h2>
+    </div>
+    <div class="filter-controls">
+      <!-- Real-time Search Box -->
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input 
+          type="text" 
+          class="search-input-field" 
+          placeholder="Filter member by name..." 
+          [value]="searchQuery()" 
+          (input)="onSearchChange($any($event.target).value)" 
+        />
+        <button *ngIf="searchQuery() || selectedMemberId() !== 'all'" class="clear-search-btn" (click)="clearFilter()">&times;</button>
+      </div>
+
+      <!-- Person Dropdown Filter -->
+      <select class="filter-dropdown" [value]="selectedMemberId()" (change)="onFilterChange($any($event.target).value)">
+        <option value="all">👥 All Members ({{ membersList().length }})</option>
+        <option *ngFor="let m of membersList()" [value]="m.id">{{ m.avatar }} {{ m.name }}</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Office KPI Personas Grid (Shown when multiple members match filter) -->
+  <div class="kpi-grid" *ngIf="filteredMembers().length > 1">
+    <div *ngFor="let m of filteredMembers(); let i = index" class="member-card {{ m.themeClass }}" [class.chaos-card]="isCrazyMode()" (click)="openDrawer(m)">
+      <div class="card-header">
+        <div class="member-bio">
+          <div class="member-rank-num">#{{ i + 1 }}</div>
+          <div class="avatar-wrapper">{{ m.avatar }}</div>
+          <div>
+            <div class="member-name">{{ m.name }}</div>
+            <div class="member-role">{{ m.role }}</div>
+          </div>
+        </div>
+        <span class="kpi-badge">{{ m.rankBadge }}</span>
+      </div>
+
+      <div class="kpi-body">
+        <div class="kpi-title">{{ m.kpiTitle }}</div>
+        <div class="kpi-metric-row">
+          <span class="kpi-metric">{{ m.id === 'alex' ? snackCount() : m.kpiMetric }}</span>
+          <span class="kpi-unit">{{ m.kpiUnit }}</span>
+          <span class="kpi-change" *ngIf="m.changeText">{{ m.changeText }}</span>
+        </div>
+      </div>
+
+      <!-- Tile Visual Box (Chart + Side Legend if available) -->
+      <div class="tile-visual-row">
+        <div class="chart-container-tile"><canvas #tileCanvas></canvas></div>
+        
+        <!-- Legend List for Cards with breakdowns -->
+        <div class="tile-legend-list" *ngIf="m.legendItems">
+          <div class="legend-item" *ngFor="let leg of m.legendItems">
+            <span class="legend-dot" [style.background-color]="leg.color"></span>
+            <span class="legend-label">{{ leg.label }}</span>
+            <span class="legend-pct">{{ leg.percent }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <span>{{ m.footerLeft }}</span>
+        <button *ngIf="m.id === 'alex'" class="action-mini-btn" (click)="$event.stopPropagation(); raidSnack()">🍕 Raid Snack</button>
+        <button *ngIf="m.id === 'dev'" class="action-mini-btn" (click)="$event.stopPropagation(); smashKeyboard()">💥 Smash Key</button>
+        <button *ngIf="m.id === 'priya'" class="action-mini-btn" (click)="$event.stopPropagation(); generateThreat()">📧 Email</button>
+        <button *ngIf="m.id === 'marcus'" class="action-mini-btn" (click)="$event.stopPropagation(); generateExcuse()">🫥 Excuse</button>
+        <span *ngIf="m.id !== 'alex' && m.id !== 'dev' && m.id !== 'priya' && m.id !== 'marcus'" class="drill-cta">{{ m.footerCta }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Single Member Spotlight Panel (Shown when exactly 1 member is filtered/searched) -->
+  <div class="filtered-spotlight-container" *ngIf="filteredMembers().length === 1">
+    <!-- Left: Selected Member Card -->
+    <div class="member-card {{ filteredMembers()[0].themeClass }}" [class.chaos-card]="isCrazyMode()" (click)="openDrawer(filteredMembers()[0])">
+      <div class="card-header">
+        <div class="member-bio">
+          <div class="member-rank-num">#1</div>
+          <div class="avatar-wrapper">{{ filteredMembers()[0].avatar }}</div>
+          <div>
+            <div class="member-name">{{ filteredMembers()[0].name }}</div>
+            <div class="member-role">{{ filteredMembers()[0].role }}</div>
+          </div>
+        </div>
+        <span class="kpi-badge">{{ filteredMembers()[0].rankBadge }}</span>
+      </div>
+
+      <div class="kpi-body">
+        <div class="kpi-title">{{ filteredMembers()[0].kpiTitle }}</div>
+        <div class="kpi-metric-row">
+          <span class="kpi-metric">{{ filteredMembers()[0].id === 'alex' ? snackCount() : filteredMembers()[0].kpiMetric }}</span>
+          <span class="kpi-unit">{{ filteredMembers()[0].kpiUnit }}</span>
+          <span class="kpi-change" *ngIf="filteredMembers()[0].changeText">{{ filteredMembers()[0].changeText }}</span>
+        </div>
+      </div>
+
+      <div class="tile-visual-row">
+        <div class="chart-container-tile"><canvas #tileCanvas></canvas></div>
+        <div class="tile-legend-list" *ngIf="filteredMembers()[0].legendItems">
+          <div class="legend-item" *ngFor="let leg of filteredMembers()[0].legendItems">
+            <span class="legend-dot" [style.background-color]="leg.color"></span>
+            <span class="legend-label">{{ leg.label }}</span>
+            <span class="legend-pct">{{ leg.percent }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <span>{{ filteredMembers()[0].footerLeft }}</span>
+        <button *ngIf="filteredMembers()[0].id === 'alex'" class="action-mini-btn" (click)="$event.stopPropagation(); raidSnack()">🍕 Raid Snack</button>
+        <button *ngIf="filteredMembers()[0].id === 'dev'" class="action-mini-btn" (click)="$event.stopPropagation(); smashKeyboard()">💥 Smash Key</button>
+        <button *ngIf="filteredMembers()[0].id === 'priya'" class="action-mini-btn" (click)="$event.stopPropagation(); generateThreat()">📧 Email</button>
+        <button *ngIf="filteredMembers()[0].id === 'marcus'" class="action-mini-btn" (click)="$event.stopPropagation(); generateExcuse()">🫥 Excuse</button>
+        <span *ngIf="filteredMembers()[0].id !== 'alex' && filteredMembers()[0].id !== 'dev' && filteredMembers()[0].id !== 'priya' && filteredMembers()[0].id !== 'marcus'" class="drill-cta">{{ filteredMembers()[0].footerCta }}</span>
+      </div>
+    </div>
+
+    <!-- Right: Persona Spotlight & HR Audit Panel -->
+    <div class="persona-spotlight-card">
+      <div class="spotlight-header">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span class="spotlight-avatar">{{ filteredMembers()[0].avatar }}</span>
+          <div>
+            <h3>{{ filteredMembers()[0].name }} — Chaos Forensics</h3>
+            <p class="spotlight-subtitle">{{ filteredMembers()[0].role }} • {{ filteredMembers()[0].rankBadge }}</p>
+          </div>
+        </div>
+        <button class="action-mini-btn" (click)="clearFilter()">👥 Show All (6)</button>
+      </div>
+
+      <div class="spotlight-stats-grid">
+        <div class="spotlight-stat" *ngFor="let s of filteredMembers()[0].stats">
+          <span class="sp-stat-label">{{ s.label }}</span>
+          <strong class="sp-stat-val">{{ s.value }}</strong>
+        </div>
+      </div>
+
+      <div class="spotlight-insights-box">
+        <div class="sp-insights-title">📜 HR Incident Field Reports & Evidence:</div>
+        <ul class="sp-insights-list">
+          <li *ngFor="let ins of filteredMembers()[0].insights">
+            <span>⚡</span> {{ ins }}
+          </li>
+        </ul>
+      </div>
+
+      <div class="spotlight-footer">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <button *ngIf="filteredMembers()[0].id === 'alex'" class="action-game-btn" (click)="raidSnack()">🍕 Raid Snack</button>
+          <button *ngIf="filteredMembers()[0].id === 'dev'" class="action-game-btn" (click)="smashKeyboard()">💥 Smash Key</button>
+          <button *ngIf="filteredMembers()[0].id === 'priya'" class="action-game-btn" (click)="generateThreat()">📧 Email Threat</button>
+          <button *ngIf="filteredMembers()[0].id === 'marcus'" class="action-game-btn" (click)="generateExcuse()">🫥 Camera Excuse</button>
+          <button class="action-game-btn" style="background:#3b82f6;color:#fff;border-color:#3b82f6;" (click)="openDrawer(filteredMembers()[0])">📊 Deep Dive Analytics →</button>
+        </div>
+        <span class="sp-vote-badge">🔥 {{ filteredMembers()[0].votes }} Chaos Votes</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty Filter State -->
+  <div class="empty-filter-state" *ngIf="filteredMembers().length === 0">
+    <div class="empty-icon">🙈</div>
+    <h3>No Chaotic Teammate Found!</h3>
+    <p>No member matches "{{ searchQuery() }}". Try searching for 'Alex', 'Priya', 'Sarah' or clear your filter.</p>
+    <button class="action-game-btn" style="margin-top:12px;" (click)="clearFilter()">🔄 Reset Search Filter</button>
+  </div>
+
+  <!-- 🏆 QUANTUM CHAOS LEADERBOARD TABLE SECTION 🏆 -->
+  <div class="leaderboard-section">
+    <div class="leaderboard-header-bar">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <span style="font-size:1.6rem;">🥇</span>
+        <div>
+          <h3>QUANTUM CHAOS LEADERBOARD TABLE</h3>
+          <p class="section-sub">Official HR Standings & Corporate Chaos Hierarchy</p>
+        </div>
+      </div>
+      <div class="leaderboard-sort-box">
+        <label style="font-size:0.8rem;font-weight:800;color:var(--text-muted);">Sort Standings:</label>
+        <select class="filter-dropdown" [value]="sortOption()" (change)="onSortChange($any($event.target).value)">
+          <option value="rank">🏆 Rank (#1 to #6)</option>
+          <option value="chaos">🔥 Highest Chaos Metric</option>
+          <option value="name">🔤 Teammate Name (A-Z)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="table-responsive-wrapper">
+      <table class="leaderboard-table">
+        <thead>
+          <tr>
+            <th style="width:90px;">Rank</th>
+            <th>Teammate</th>
+            <th>Corporate Role</th>
+            <th>Primary Ridiculous KPI</th>
+            <th>Chaos Badge</th>
+            <th>Notable Corporate Crime</th>
+            <th style="text-align:right;">Quick Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let m of sortedMembers(); let i = index" (click)="openDrawer(m)" class="leaderboard-row">
+            <td>
+              <span class="rank-pill" [class.gold]="i===0" [class.silver]="i===1" [class.bronze]="i===2">
+                {{ i === 0 ? '🥇 #1' : i === 1 ? '🥈 #2' : i === 2 ? '🥉 #3' : '#' + (i + 1) }}
+              </span>
+            </td>
+            <td>
+              <div class="tb-member-info">
+                <span class="tb-avatar">{{ m.avatar }}</span>
+                <div>
+                  <strong class="tb-name">{{ m.name }}</strong>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="tb-role">{{ m.role }}</span>
+            </td>
+            <td>
+              <div class="tb-kpi-box">
+                <strong class="tb-kpi-val">{{ m.id === 'alex' ? snackCount() : m.kpiMetric }} <small>{{ m.kpiUnit }}</small></strong>
+                <span class="tb-kpi-title">{{ m.kpiTitle }}</span>
+              </div>
+            </td>
+            <td>
+              <span class="kpi-badge">{{ m.rankBadge }}</span>
+            </td>
+            <td>
+              <span class="tb-crime">{{ m.footerLeft }}</span>
+            </td>
+            <td style="text-align:right;" (click)="$event.stopPropagation()">
+              <div style="display:flex;justify-content:flex-end;gap:8px;">
+                <button *ngIf="m.id === 'alex'" class="action-mini-btn" (click)="raidSnack()">🍕 Raid</button>
+                <button *ngIf="m.id === 'dev'" class="action-mini-btn" (click)="smashKeyboard()">💥 Smash</button>
+                <button *ngIf="m.id === 'priya'" class="action-mini-btn" (click)="generateThreat()">📧 Email</button>
+                <button *ngIf="m.id === 'marcus'" class="action-mini-btn" (click)="generateExcuse()">🫥 Excuse</button>
+                <button class="action-mini-btn primary" (click)="openDrawer(m)">📊 View</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- BOTTOM DARK ANALYTICS SECTION ("QUANTUM TEAM INTELLIGENCE") -->
+  <div class="bottom-analytics-section">
+    <div class="dark-grid">
+      <!-- 1. Team Chaos Radar Widget -->
+      <div class="dark-widget">
+        <div class="dark-widget-header">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:1.2rem;">🔮</span>
+            <h4>TEAM CHAOS RADAR</h4>
+          </div>
+          <span class="dark-subtext">Higher is crazier</span>
+        </div>
+        <div class="dark-chart-box"><canvas #radarCanvas></canvas></div>
+      </div>
+
+      <!-- 2. Snack Consumption Breakdown Widget -->
+      <div class="dark-widget">
+        <div class="dark-widget-header">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:1.2rem;">🍕</span>
+            <h4>SNACK CONSUMPTION BREAKDOWN</h4>
+          </div>
+        </div>
+        <div class="snack-breakdown-row">
+          <div class="snack-chart-box">
+            <canvas #snackBreakdownCanvas></canvas>
+            <div class="donut-center-text">
+              <strong>{{ snackCount() }}</strong>
+              <small>snacks/hr</small>
+            </div>
+          </div>
+          <div class="snack-sketch-note">
+            🍕 <i>Good food = Good code (hopefully)</i>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Meeting Energy Decay Widget -->
+      <div class="dark-widget">
+        <div class="dark-widget-header">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:1.2rem;">📉</span>
+            <h4>MEETING ENERGY DECAY</h4>
+          </div>
+        </div>
+        <div class="decay-chart-box">
+          <div class="speech-bubble">After 30 mins... It's all downhill!</div>
+          <canvas #energyDecayCanvas></canvas>
+        </div>
+      </div>
+
+      <!-- 4. Quantum Team Intelligence Stats Widget -->
+      <div class="dark-widget">
+        <div class="dark-widget-header">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:1.2rem;">🧠</span>
+            <h4>QUANTUM TEAM INTELLIGENCE</h4>
+          </div>
+        </div>
+        <div class="intelligence-stats-grid">
+          <div class="intel-row">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span class="intel-icon red">🚨</span>
+              <div>
+                <div class="intel-label">Most Dangerous Time</div>
+                <div class="intel-val">3:42 PM</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span class="intel-icon blue">💡</span>
+              <div>
+                <div class="intel-label">Most Used Excuse</div>
+                <div class="intel-val">"Network Issue"</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="intel-row">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span class="intel-icon green">☕</span>
+              <div>
+                <div class="intel-label">Peak Snack Activity</div>
+                <div class="intel-val">11:17 AM</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span class="intel-icon purple">💀</span>
+              <div>
+                <div class="intel-label">Meeting Survival Rate</div>
+                <div class="intel-val">23%</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Progress Bars -->
+          <div class="intel-progress-box">
+            <div class="prog-header">
+              <span>🔥 Office Chaos Level</span>
+              <strong>91%</strong>
+            </div>
+            <div class="prog-bar-bg"><div class="prog-bar-fill red" style="width:91%;"></div></div>
+          </div>
+
+          <div class="intel-progress-box">
+            <div class="prog-header">
+              <span>😊 Team Happiness Index</span>
+              <strong>67%</strong>
+            </div>
+            <div class="prog-bar-bg"><div class="prog-bar-fill yellow" style="width:67%;"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Member Drilldown Canvas Dialog -->
+<div class="modal-backdrop" [class.open]="activeMember()" (click)="closeDrawer()">
+  <div class="modal-popup" *ngIf="activeMember() as cur" (click)="$event.stopPropagation()">
+    <div class="modal-top">
+      <div style="display:flex;align-items:center;gap:14px;">
+        <span class="avatar-wrapper" style="font-size:2rem;">{{ cur.avatar }}</span>
+        <div>
+          <h2>{{ cur.name }}</h2>
+          <p class="modal-role">{{ cur.role }}</p>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <span class="kpi-badge">{{ cur.rankBadge }}</span>
+        <button class="close-btn" (click)="closeDrawer()">&times;</button>
+      </div>
+    </div>
+    <div class="modal-stats-grid">
+      <div class="m-stat-card" *ngFor="let s of cur.stats">
+        <div class="m-stat-label">{{ s.label }}</div>
+        <div class="m-stat-value">{{ s.value }}</div>
+      </div>
+    </div>
+    <div class="modal-chart-box"><canvas #drawerCanvas></canvas></div>
+    <div class="insights-list">
+      <div class="insight-item" *ngFor="let ins of cur.insights">{{ ins }}</div>
+    </div>
+  </div>
+</div>
+
+<!-- 🎡 SPIN THE WHEEL OF EXCUSES MODAL -->
+<div class="modal-backdrop" [class.open]="isWheelOpen()" (click)="closeExcuseWheel()">
+  <div class="modal-popup wheel-modal" (click)="$event.stopPropagation()">
+    <div class="modal-top">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <span style="font-size:2rem;">🎡</span>
+        <div>
+          <h2>Spin the Wheel of Excuses</h2>
+          <p class="modal-role">Generate bulletproof corporate excuses instantly!</p>
+        </div>
+      </div>
+      <button class="close-btn" (click)="closeExcuseWheel()">&times;</button>
+    </div>
+    <div class="wheel-box">
+      <div class="excuse-display-card" [class.spinning]="isSpinning()">
+        <div class="excuse-text">{{ selectedExcuse() }}</div>
+      </div>
+      <button class="spin-main-btn" [disabled]="isSpinning()" (click)="spinWheel()">
+        <span>{{ isSpinning() ? '🌀 SPINNING...' : '🎰 SPIN THE WHEEL!' }}</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 👥 ADD CUSTOM TEAMMATE MODAL -->
+<div class="modal-backdrop" [class.open]="isAddMemberOpen()" (click)="closeAddMemberModal()">
+  <div class="modal-popup add-member-modal" (click)="$event.stopPropagation()">
+    <div class="modal-top">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <span style="font-size:2rem;">👥</span>
+        <div>
+          <h2>Add Teammate / Boss</h2>
+          <p class="modal-role">Live-insert real colleagues into the dashboard!</p>
+        </div>
+      </div>
+      <button class="close-btn" (click)="closeAddMemberModal()">&times;</button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Colleague Name</label>
+        <input type="text" #nameIn [value]="newMemberName()" (input)="newMemberName.set(nameIn.value)" placeholder="e.g. Boss Kumar / Sarah" class="form-input" />
+      </div>
+      <div class="form-group">
+        <label>Corporate Role</label>
+        <input type="text" #roleIn [value]="newMemberRole()" (input)="newMemberRole.set(roleIn.value)" placeholder="e.g. Chief Chai Architect" class="form-input" />
+      </div>
+      <div class="form-group">
+        <label>Emoji Avatar</label>
+        <input type="text" #avatarIn [value]="newMemberAvatar()" (input)="newMemberAvatar.set(avatarIn.value)" placeholder="e.g. ☕ / 🚀 / 🦁" class="form-input" />
+      </div>
+      <div class="form-group">
+        <label>Ridiculous KPI Title</label>
+        <input type="text" #titleIn [value]="newMemberKpiTitle()" (input)="newMemberKpiTitle.set(titleIn.value)" placeholder="e.g. Tea Break Velocity" class="form-input" />
+      </div>
+      <div class="form-group">
+        <label>KPI Metric Value</label>
+        <input type="number" #metricIn [value]="newMemberKpiMetric()" (input)="newMemberKpiMetric.set(+metricIn.value)" placeholder="e.g. 9.8" class="form-input" />
+      </div>
+      <div class="form-group">
+        <label>Metric Unit</label>
+        <input type="text" #unitIn [value]="newMemberKpiUnit()" (input)="newMemberKpiUnit.set(unitIn.value)" placeholder="e.g. cups / hr" class="form-input" />
+      </div>
+    </div>
+    <div style="margin-top:20px;display:flex;justify-content:flex-end;gap:12px;">
+      <button class="action-mini-btn" style="padding:10px 18px;font-size:0.95rem;" (click)="closeAddMemberModal()">Cancel</button>
+      <button class="spin-main-btn" style="margin-top:0;width:auto;padding:10px 24px;" (click)="submitNewMember()">✨ Add Teammate Now!</button>
+    </div>
+  </div>
+</div>

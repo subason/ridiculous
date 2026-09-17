@@ -1,0 +1,43 @@
+{
+  "hash": "c76b89aa",
+  "configHash": "2bb45a25",
+  "lockfileHash": "c3846ec7",
+  "browserHash": "67afbb41",
+  "optimized": {
+    "@angular/common": {
+      "src": "../../../../../../node_modules/@angular/common/fesm2022/common.mjs",
+      "file": "@angular_common.js",
+      "fileHash": "3b2c9a96",
+      "needsInterop": false
+    },
+    "@angular/core": {
+      "src": "../../../../../../node_modules/@angular/core/fesm2022/core.mjs",
+      "file": "@angular_core.js",
+      "fileHash": "b51bf98a",
+      "needsInterop": false
+    },
+    "@angular/platform-browser": {
+      "src": "../../../../../../node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs",
+      "file": "@angular_platform-browser.js",
+      "fileHash": "1257b74c",
+      "needsInterop": false
+    },
+    "chart.js": {
+      "src": "../../../../../../node_modules/chart.js/dist/chart.js",
+      "file": "chart__js.js",
+      "fileHash": "9a0dc04f",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-ALATKUPO": {
+      "file": "chunk-ALATKUPO.js"
+    },
+    "chunk-KIXIL7HX": {
+      "file": "chunk-KIXIL7HX.js"
+    },
+    "chunk-WDMUDEB6": {
+      "file": "chunk-WDMUDEB6.js"
+    }
+  }
+}
